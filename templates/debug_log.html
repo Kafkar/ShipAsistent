@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Log</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        #log-container {
+            font-family: monospace;
+            background-color: #000;
+            color: #fff;
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+        }
+        .log-info { color: #0ff; }
+        .log-warning { color: #ff0; }
+        .log-error { color: #f00; }
+        .log-success { color: #0f0; }
+    </style>
+</head>
+<body>
+    <h1>Debug Log</h1>
+    <div id="log-container"></div>
+
+    <script>
+        var socket = io();
+        var logContainer = document.getElementById('log-container');
+    
+        socket.on('debug_log', function(data) {
+            var logEntry = document.createElement('div');
+            logEntry.className = 'log-' + data.type;
+            logEntry.textContent = '[' + data.timestamp + '] [' + data.type.toUpperCase() + '] ' + data.message;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        });
+    </script>
+</body>
+</html>
