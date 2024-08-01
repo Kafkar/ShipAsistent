@@ -1,0 +1,28 @@
+import threading
+import pynmea2
+from config import Config
+
+class NMEAThread(threading.Thread):
+    def __init__(self, logger):
+        threading.Thread.__init__(self)
+        self.logger = logger
+        self.running = True
+
+    def run(self):
+        while self.running:
+            try:
+                # Simulating NMEA data stream (replace with actual data source)
+                nmea_stream = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47\n"
+                
+                for line in nmea_stream.split('\n'):
+                    if line:
+                        try:
+                            msg = pynmea2.parse(line)
+                            self.logger.info(f"Received NMEA sentence type: {msg.sentence_type}")
+                        except pynmea2.ParseError as e:
+                            self.logger.error(f"Error parsing NMEA sentence: {e}")
+            except Exception as e:
+                self.logger.error(f"Error in NMEA thread: {e}")
+
+    def stop(self):
+        self.running = False
